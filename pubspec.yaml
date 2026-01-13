@@ -1,6 +1,6 @@
 name: smart_utils_package
-description: "A new Flutter package project."
-version: 0.0.1
+description: "A comprehensive Flutter utility package with input formatters, data converters, and formatting helpers."
+version: 0.0.3
 homepage: https://github.com/SmartMind-New/smart_utils_package.git
 
 environment:

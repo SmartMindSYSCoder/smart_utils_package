@@ -1,3 +1,46 @@
+## 0.0.3
+
+### Added
+- **Vital Signs Formatter**: General-purpose formatter for medical vital signs
+  - Predefined configurations for 11 common vital signs (temperature, blood pressure, heart rate, SpO2, glucose, etc.)
+  - Smart decimal/integer handling based on vital type
+  - Range validation with min/max values
+  - Special blood pressure formatting (systolic/diastolic)
+  - Fully customizable for custom vital signs
+  - Comprehensive documentation in `VITAL_SIGNS_FORMATTER.md`
+- Added vital signs section to example app
+
+### Changed
+- **Name Formatter**: Now supports both Arabic (ا-ي) and English (a-z, A-Z) letters
+- **Email Formatter**: Added `maxLength` parameter (default: 50, customizable)
+- Updated README with vital signs examples and usage
+- Updated INPUT_FORMATTERS.md with Arabic support documentation
+
+## 0.0.2
+
+### Added
+- **Input Formatters Module**: Comprehensive collection of input formatters for common form fields
+  - Personal Information: `name()`, `age()`
+  - Contact Information: `mobile()`, `email()`
+  - Physical Measurements: `height()`, `weight()`
+  - Identification Documents: `idNumber()`, `passport()`, `postalCode()`
+  - Payment Information: `creditCard()`, `cvv()`, `currency()`
+  - Account Information: `username()`, `url()`
+  - Date & Time: `date()`, `time()`
+  - Other: `percentage()`
+- Custom formatters: `UpperCaseTextFormatter`, `LowerCaseTextFormatter`
+- Comprehensive example app demonstrating all input formatters
+- Detailed documentation in `INPUT_FORMATTERS.md`
+
+### Changed
+- Updated README with comprehensive usage examples
+- Added example app with beautiful UI showcasing all formatters
+
 ## 0.0.1
 
-* TODO: Describe initial release.
+### Added
+- Initial release
+- Date & Time helpers
+- Enum converter utilities
+- Model parser utilities
+- Type converter utilities
