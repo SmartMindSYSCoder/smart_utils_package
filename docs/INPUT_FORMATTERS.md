@@ -443,59 +443,46 @@ TextField(
 443: 
 444: ## Password & Security
 445: 
-446: ### Password Formatter (Standard)
+446: ### Password Formatter
 447: 
-448: **Method:** `SmartInputFormatters.password({int maxLength = 50})`
+448: **Method:** `SmartInputFormatters.password({...})`
 449: 
-450: **Description:** Basic password input enabling any characters, primarily used for enforcing maximum length.
+450: **Description:** A unified formatter for all password scenarios (Basic, Strict, and Secure).
 451: 
 452: **Features:**
-453: - Allows: Any character
-454: - Default max length: 50 characters
-455: 
-456: **Usage:**
-457: ```dart
-458: TextField(
-459:   inputFormatters: SmartInputFormatters.password(),
-460:   obscureText: true,
-461:   decoration: InputDecoration(labelText: 'Password'),
-462: )
-463: ```
-464: 
-465: ### Strict Password Formatter
-466: 
-467: **Method:** `SmartInputFormatters.strictPassword({int maxLength = 50})`
-468: 
-469: **Description:** Strict input formatter that **only** allows English letters, numbers, and standard special characters. It actively blocks spaces and characters from other languages (like Arabic, Cyrillic, etc.) to ensure database compatibility or strict security policies.
-470: 
-471: **Features:**
-472: - Allows: English letters (a-z, A-Z), Digits (0-9), Special Chars (!@#$...)
-473: - **Blocks**: Spaces, Non-English letters (Arabic, etc.), Emoji
-474: - Default max length: 50 characters
+453: - **strict**: If `true`, allows ONLY English letters, numbers, and ASCII special characters.
+454: - **allowSpaces**: If `true`, allows spaces. Defaults to `false`.
+455: - **Validation**: Optional complexity requirements (uppercase, lowercase, numbers, specials).
+456: - **Length**: Configurable min/max length.
+457: 
+458: **Usage:**
+459: ```dart
+460: // Basic (Length limit, No spaces)
+461: SmartInputFormatters.password()
+462: 
+463: // Secure (Enforce complexity)
+464: SmartInputFormatters.password(
+465:   requireUppercase: true,
+466:   requireNumbers: true,
+467:   requireSpecialChars: true,
+468: )
+469: 
+470: // Strict Mode (ASCII only, no languages/emoji)
+471: SmartInputFormatters.password(strict: true)
+472: ```
+473: 
+474: ### Configuration Guide
 475: 
-476: **Usage:**
-477: ```dart
-478: TextField(
-479:   inputFormatters: SmartInputFormatters.strictPassword(),
-480:   obscureText: true,
-481:   decoration: InputDecoration(
-482:     labelText: 'Password',
-483:     hintText: 'No spaces or non-English chars',
-484:   ),
-485: )
-486: ```
-487: 
-488: ### Secure Password Formatter
-489: 
-490: **Method:** `SmartInputFormatters.securePassword({...})`
-491: 
-492: **Description:** Designed for validating and enforcing complexity policies (e.g., must have uppercase, lowercase, etc.).
-493: 
-494: **Features:**
-495: - Configurable requirements (uppercase, lowercase, numbers, special chars)
-496: - Enforces minimum and maximum length
-497: 
-498: ### Compare Password Formatters
+476: Use this table to configure `password()` for your needs:
+477: 
+478: | Use Case | Configuration |
+479: | :--- | :--- |
+480: | **Basic Password** | `password()` |
+481: | **Allow Spaces** | `password(allowSpaces: true)` |
+482: | **Strict (No Unicode)** | `password(strict: true)` |
+483: | **Secure (Complexity)** | `password(requireUppercase: true, ...)` |
+508: 
+509: ### Compare Password Formatters
 499: 
 500: Use this guide to choose the right formatter for your security needs:
 501: 
@@ -504,10 +491,18 @@ TextField(
 504: | **Allows English Letters** | ✅ | ✅ | ✅ |
 505: | **Allows Numbers** | ✅ | ✅ | ✅ |
 506: | **Allows Special Char** | ✅ | ✅ | ✅ |
-507: | **Allows Spaces** | ✅ | ❌ **Blocked** | ✅ |
+507: | **Allows Spaces** | ✅ | ❌ **Blocked** | ❌ **Blocked** |
 508: | **Allows Arabic/Other** | ✅ | ❌ **Blocked** | ✅ |
 509: | **Allows Emoji** | ✅ | ❌ **Blocked** | ✅ |
 510: | **Primary Use Case** | Basic Input | Legacy Systems / Strict IT Policy | Complexity Validation |
+
+### Core Difference
+
+The main distinction between **Strict** and **Secure** password formatters lies in their approach to allowed characters:
+
+- **Strict Password (`strictPassword`)**: Uses an **Allowlist** approach. It strictly permits *only* standard English letters, numbers, and ASCII special characters. It automatically invalidates/strips any other character (like Arabic letters, Emojis, or invisible unicode characters). Use this when your backend or auth system cannot handle Unicode characters.
+
+- **Secure Password (`securePassword`)**: Uses a **Validation** approach. It allows a broader range of characters (including Unicode/Emoji) to support stronger, more personal passwords, but enforces complexity rules (must have uppercase, number, etc.) to ensure strength. It specifically **blocks spaces** to prevent common whitespace errors, but otherwise gives users more freedom.
 511: 
 512: ---
 

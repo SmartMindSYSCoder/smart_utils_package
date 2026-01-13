@@ -369,10 +369,16 @@ class _InputFormattersDemoState extends State<InputFormattersDemo> {
               label: 'Password (Secure)',
               hint: 'Enter secure password',
               icon: Icons.lock,
-              formatters: SmartInputFormatters.securePassword(maxLength: 10),
+              formatters: SmartInputFormatters.password(
+                maxLength: 10,
+                requireUppercase: true,
+                requireLowercase: true,
+                requireNumbers: true,
+                requireSpecialChars: true,
+              ),
               obscureText: true,
               description:
-                  'Min 8 chars, uppercase, lowercase, number, special char',
+                  'Min 8 chars, uppercase, lowercase, number, special char, no spaces',
             ),
             const SizedBox(height: 16),
             _buildTextField(
@@ -380,7 +386,11 @@ class _InputFormattersDemoState extends State<InputFormattersDemo> {
               label: 'Strict Password (English/Nums/Specials)',
               hint: 'No spaces or other langs',
               icon: Icons.lock_clock,
-              formatters: SmartInputFormatters.strictPassword(),
+              formatters: SmartInputFormatters.password(
+                maxLength: 50,
+                strict: true,
+                allowSpaces: false,
+              ),
               obscureText: true,
               description: 'English, numbers, special chars only. No spaces.',
             ),

@@ -189,7 +189,18 @@ void main() {
       // So if I type a 9th character and still no uppercase, it rejects?
       // Let's test that.
 
-      final formatters = SmartInputFormatters.securePassword(minLength: 5);
+      final formatters = SmartInputFormatters.password(
+        minLength: 5,
+        requireUppercase: true,
+        requireLowercase: true,
+        requireNumbers: true,
+        requireSpecialChars: true,
+      );
+
+      test('should prevent spaces', () {
+        final result = applyFormatters(formatters, "password", "password ");
+        expect(result.text, "password");
+      });
 
       test('should allow typing if length < min', () {
         expect(applyFormatters(formatters, "", "abc").text, "abc");

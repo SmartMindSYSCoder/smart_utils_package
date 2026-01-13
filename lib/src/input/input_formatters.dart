@@ -165,81 +165,73 @@ class SmartInputFormatters {
     ];
   }
 
-  /// Returns formatters for password input (unrestricted).
+  /// Returns formatters for password input.
   ///
-  /// Formats:
-  /// - No character restrictions
-  /// - Maximum length: 50 characters (customizable)
+  /// A unified formatter for all password scenarios:
+  /// - **Basic**: `password()` (Length limit, no spaces)
+  /// - **Strict**: `password(strict: true)` (ASCII only)
+  /// - **Secure**: `password(requireUppercase: true, requireNumbers: true, ...)` (Complexity checks)
   ///
-  /// [maxLength]: Maximum length of password (default: 50)
-  static List<TextInputFormatter> password({int maxLength = 50}) {
-    return [LengthLimitingTextInputFormatter(maxLength)];
-  }
-
-  /// Returns formatters for secure password input with validation.
-  ///
-  /// Formats:
-  /// - Validates password strength requirements in real-time
-  /// - Customizable requirements for uppercase, lowercase, numbers, special chars
-  /// - Min/max length constraints
-  ///
-  /// [requireUppercase]: Require at least one uppercase letter (default: true)
-  /// [requireLowercase]: Require at least one lowercase letter (default: true)
-  /// [requireNumbers]: Require at least one number (default: true)
-  /// [requireSpecialChars]: Require at least one special character (default: true)
-  /// [minLength]: Minimum password length (default: 8)
-  /// [maxLength]: Maximum password length (default: 50)
-  ///
-  /// Example:
-  /// ```dart
-  /// // Strict password (all requirements)
-  /// SmartInputFormatters.securePassword()
-  ///
-  /// // Relaxed password (only lowercase and numbers)
-  /// SmartInputFormatters.securePassword(
-  ///   requireUppercase: false,
-  ///   requireSpecialChars: false,
-  /// )
-  /// ```
-  static List<TextInputFormatter> securePassword({
-    bool requireUppercase = true,
-    bool requireLowercase = true,
-    bool requireNumbers = true,
-    bool requireSpecialChars = true,
-    int minLength = 8,
+  /// [maxLength]: Maximum length (default: 50)
+  /// [minLength]: Minimum length for complexity checks (default: 8)
+  /// [strict]: If true, allows ONLY English letters, numbers, and ASCII special chars (default: false)
+  /// [allowSpaces]: If true, allows spaces. If false, strips spaces (default: false)
+  /// [requireUppercase]: Require at least one uppercase letter (default: false)
+  /// [requireLowercase]: Require at least one lowercase letter (default: false)
+  /// [requireNumbers]: Require at least one number (default: false)
+  /// [requireSpecialChars]: Require at least one special character (default: false)
+  static List<TextInputFormatter> password({
     int maxLength = 50,
+    int minLength = 8,
+    bool strict = false,
+    bool allowSpaces = false,
+    bool requireUppercase = false,
+    bool requireLowercase = false,
+    bool requireNumbers = false,
+    bool requireSpecialChars = false,
   }) {
-    return [
-      LengthLimitingTextInputFormatter(maxLength),
-      _SecurePasswordFormatter(
-        requireUppercase: requireUppercase,
-        requireLowercase: requireLowercase,
-        requireNumbers: requireNumbers,
-        requireSpecialChars: requireSpecialChars,
-        minLength: minLength,
-      ),
-    ];
-  }
+    final formatters = <TextInputFormatter>[];
 
-  /// Returns formatters for strict password input.
-  ///
-  /// Formats:
-  /// - Allows English letters (a-z, A-Z)
-  /// - Allows digits (0-9)
-  /// - Allows special characters (standard ASCII punctuation)
-  /// - Prevents spaces
-  /// - Prevents non-English characters (e.g., Arabic, Emoji)
-  ///
-  /// [maxLength]: Maximum length of password (default: 50)
-  static List<TextInputFormatter> strictPassword({int maxLength = 50}) {
-    return [
+    // 1. Strict Mode (Allowlist) - applied first
+    if (strict) {
       // Allow printable ASCII characters (33-126)
-      // This range includes a-z, A-Z, 0-9, and common special chars (!@#$...)
-      // It excludes space (32) and control characters (0-31, 127)
-      // It also excludes all non-ASCII characters (Arabic, Emoji, etc.)
-      FilteringTextInputFormatter.allow(RegExp(r'[\x21-\x7E]')),
-      LengthLimitingTextInputFormatter(maxLength),
-    ];
+      // This excludes space (32) and everything else.
+      if (allowSpaces) {
+        formatters.add(
+          FilteringTextInputFormatter.allow(RegExp(r'[\x20-\x7E]')),
+        );
+      } else {
+        formatters.add(
+          FilteringTextInputFormatter.allow(RegExp(r'[\x21-\x7E]')),
+        );
+      }
+    } else {
+      // Not strict: Allow everything except spaces (if disallowed)
+      if (!allowSpaces) {
+        formatters.add(_NoSpaceFormatter());
+      }
+    }
+
+    // 2. Length Limiter
+    formatters.add(LengthLimitingTextInputFormatter(maxLength));
+
+    // 3. Complexity Validator (only if requirements are set)
+    if (requireUppercase ||
+        requireLowercase ||
+        requireNumbers ||
+        requireSpecialChars) {
+      formatters.add(
+        _SecurePasswordFormatter(
+          requireUppercase: requireUppercase,
+          requireLowercase: requireLowercase,
+          requireNumbers: requireNumbers,
+          requireSpecialChars: requireSpecialChars,
+          minLength: minLength,
+        ),
+      );
+    }
+
+    return formatters;
   }
 
   /// Returns formatters for postal/zip codes.
