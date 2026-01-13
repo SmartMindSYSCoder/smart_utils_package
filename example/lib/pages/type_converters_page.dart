@@ -61,7 +61,7 @@ class _TypeConvertersDemoState extends State<TypeConvertersDemo> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             DropdownButtonFormField<String>(
-              value: _selectedType,
+              initialValue: _selectedType,
               items: [
                 'Int',
                 'Double',
