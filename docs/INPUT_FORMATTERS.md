@@ -12,9 +12,10 @@ The `SmartInputFormatters` class provides a comprehensive collection of static m
 4. [Identification Documents](#identification-documents)
 5. [Payment Information](#payment-information)
 6. [Account Information](#account-information)
-7. [Date & Time](#date--time)
-8. [Other Formatters](#other-formatters)
-9. [Custom Formatters](#custom-formatters)
+7. [Password & Security](#password--security)
+8. [Date & Time](#date--time)
+9. [Other Formatters](#other-formatters)
+10. [Custom Formatters](#custom-formatters)
 
 ---
 
@@ -436,9 +437,79 @@ TextField(
 **Examples:**
 - ✅ "https://example.com"
 - ✅ "https://example.com/path?query=value"
-- ❌ "https://example .com" (spaces not allowed)
-
----
+440: - ❌ "https://example .com" (spaces not allowed)
+441: 
+442: ---
+443: 
+444: ## Password & Security
+445: 
+446: ### Password Formatter (Standard)
+447: 
+448: **Method:** `SmartInputFormatters.password({int maxLength = 50})`
+449: 
+450: **Description:** Basic password input enabling any characters, primarily used for enforcing maximum length.
+451: 
+452: **Features:**
+453: - Allows: Any character
+454: - Default max length: 50 characters
+455: 
+456: **Usage:**
+457: ```dart
+458: TextField(
+459:   inputFormatters: SmartInputFormatters.password(),
+460:   obscureText: true,
+461:   decoration: InputDecoration(labelText: 'Password'),
+462: )
+463: ```
+464: 
+465: ### Strict Password Formatter
+466: 
+467: **Method:** `SmartInputFormatters.strictPassword({int maxLength = 50})`
+468: 
+469: **Description:** Strict input formatter that **only** allows English letters, numbers, and standard special characters. It actively blocks spaces and characters from other languages (like Arabic, Cyrillic, etc.) to ensure database compatibility or strict security policies.
+470: 
+471: **Features:**
+472: - Allows: English letters (a-z, A-Z), Digits (0-9), Special Chars (!@#$...)
+473: - **Blocks**: Spaces, Non-English letters (Arabic, etc.), Emoji
+474: - Default max length: 50 characters
+475: 
+476: **Usage:**
+477: ```dart
+478: TextField(
+479:   inputFormatters: SmartInputFormatters.strictPassword(),
+480:   obscureText: true,
+481:   decoration: InputDecoration(
+482:     labelText: 'Password',
+483:     hintText: 'No spaces or non-English chars',
+484:   ),
+485: )
+486: ```
+487: 
+488: ### Secure Password Formatter
+489: 
+490: **Method:** `SmartInputFormatters.securePassword({...})`
+491: 
+492: **Description:** Designed for validating and enforcing complexity policies (e.g., must have uppercase, lowercase, etc.).
+493: 
+494: **Features:**
+495: - Configurable requirements (uppercase, lowercase, numbers, special chars)
+496: - Enforces minimum and maximum length
+497: 
+498: ### Compare Password Formatters
+499: 
+500: Use this guide to choose the right formatter for your security needs:
+501: 
+502: | Feature | Standard `password()` | Strict `strictPassword()` | Secure `securePassword()` |
+503: | :--- | :---: | :---: | :---: |
+504: | **Allows English Letters** | ✅ | ✅ | ✅ |
+505: | **Allows Numbers** | ✅ | ✅ | ✅ |
+506: | **Allows Special Char** | ✅ | ✅ | ✅ |
+507: | **Allows Spaces** | ✅ | ❌ **Blocked** | ✅ |
+508: | **Allows Arabic/Other** | ✅ | ❌ **Blocked** | ✅ |
+509: | **Allows Emoji** | ✅ | ❌ **Blocked** | ✅ |
+510: | **Primary Use Case** | Basic Input | Legacy Systems / Strict IT Policy | Complexity Validation |
+511: 
+512: ---
 
 
 

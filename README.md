@@ -97,6 +97,16 @@ TextField(
   inputFormatters: SmartInputFormatters.email(),
   keyboardType: TextInputType.emailAddress,
 )
+TextField(
+  inputFormatters: SmartInputFormatters.email(),
+  keyboardType: TextInputType.emailAddress,
+)
+
+// Allow only English letters, numbers, and special characters (no spaces)
+TextField(
+  inputFormatters: SmartInputFormatters.strictPassword(),
+  obscureText: true,
+)
 ```
 
 ### Input Validators

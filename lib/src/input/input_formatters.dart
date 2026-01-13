@@ -221,6 +221,27 @@ class SmartInputFormatters {
     ];
   }
 
+  /// Returns formatters for strict password input.
+  ///
+  /// Formats:
+  /// - Allows English letters (a-z, A-Z)
+  /// - Allows digits (0-9)
+  /// - Allows special characters (standard ASCII punctuation)
+  /// - Prevents spaces
+  /// - Prevents non-English characters (e.g., Arabic, Emoji)
+  ///
+  /// [maxLength]: Maximum length of password (default: 50)
+  static List<TextInputFormatter> strictPassword({int maxLength = 50}) {
+    return [
+      // Allow printable ASCII characters (33-126)
+      // This range includes a-z, A-Z, 0-9, and common special chars (!@#$...)
+      // It excludes space (32) and control characters (0-31, 127)
+      // It also excludes all non-ASCII characters (Arabic, Emoji, etc.)
+      FilteringTextInputFormatter.allow(RegExp(r'[\x21-\x7E]')),
+      LengthLimitingTextInputFormatter(maxLength),
+    ];
+  }
+
   /// Returns formatters for postal/zip codes.
   ///
   /// Formats:

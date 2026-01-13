@@ -29,6 +29,7 @@ class _InputFormattersDemoState extends State<InputFormattersDemo> {
   final _usernameController = TextEditingController();
   final _urlController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _strictPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   // Vital signs controllers
@@ -57,6 +58,7 @@ class _InputFormattersDemoState extends State<InputFormattersDemo> {
     _usernameController.dispose();
     _urlController.dispose();
     _passwordController.dispose();
+    _strictPasswordController.dispose();
     _confirmPasswordController.dispose();
     _temperatureController.dispose();
     _systolicController.dispose();
@@ -374,6 +376,16 @@ class _InputFormattersDemoState extends State<InputFormattersDemo> {
             ),
             const SizedBox(height: 16),
             _buildTextField(
+              controller: _strictPasswordController,
+              label: 'Strict Password (English/Nums/Specials)',
+              hint: 'No spaces or other langs',
+              icon: Icons.lock_clock,
+              formatters: SmartInputFormatters.strictPassword(),
+              obscureText: true,
+              description: 'English, numbers, special chars only. No spaces.',
+            ),
+            const SizedBox(height: 16),
+            _buildTextField(
               controller: _confirmPasswordController,
               label: 'Confirm Password',
               hint: 'Re-enter password',
@@ -539,6 +551,10 @@ class _InputFormattersDemoState extends State<InputFormattersDemo> {
                   _passwordController.text.isNotEmpty ? '********' : '',
                 ),
                 _buildDataRow(
+                  'Strict Password',
+                  _strictPasswordController.text.isNotEmpty ? '********' : '',
+                ),
+                _buildDataRow(
                   'Confirm Password',
                   _confirmPasswordController.text.isNotEmpty ? '********' : '',
                 ),
@@ -595,6 +611,7 @@ class _InputFormattersDemoState extends State<InputFormattersDemo> {
       _usernameController.clear();
       _urlController.clear();
       _passwordController.clear();
+      _strictPasswordController.clear();
       _confirmPasswordController.clear();
       _temperatureController.clear();
       _systolicController.clear();
