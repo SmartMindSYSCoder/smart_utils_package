@@ -1,39 +1,24 @@
 # Smart Utils Package
 
-A comprehensive Flutter utility package providing input formatters, validators, data converters, and formatting helpers for common development tasks.
+A comprehensive Flutter utility package providing type-safe data converters, formatters, input validators, and helpers for common development tasks.
 
-## Features
+## 📚 Documentation
 
-### 🎯 Input Formatters
-Comprehensive collection of input formatters for various field types:
-- **Personal Info**: Name, Age
-- **Contact**: Mobile, Email
-- **Measurements**: Height, Weight (via vitalSign formatter)
-- **Vital Signs**: Temperature, Blood Pressure, Heart Rate, SpO2, Glucose with dynamic configuration
-- **Identification**: ID Number, Passport, Postal Code
-- **Payment**: Credit Card, CVV, Currency
-- **Account**: Username, URL, Password (free and secure)
-- **Other**: Percentage, and more
+| Module | Description | Documentation |
+|--------|-------------|---------------|
+| **Type Converters** | Safe type conversion utilities | [📖 View Docs](docs/TYPE_CONVERTERS.md) |
+| **Enum Converters** | Enum to/from string conversion | [📖 View Docs](docs/ENUM_CONVERTERS.md) |
+| **Number Formatters** | Currency, percentage, file sizes, etc. | [📖 View Docs](docs/NUMBER_FORMATTERS.md) |
+| **Date/Time Helpers** | Date formatting and manipulation | [📖 View Docs](docs/DATETIME_HELPERS.md) |
+| **Input Formatters** | Text field input formatters | [📖 View Docs](docs/INPUT_FORMATTERS.md) |
+| **Input Validators** | Form field validators | [📖 View Docs](docs/INPUT_VALIDATORS.md) |
+| **Vital Signs** | Specialized medical formatters | [📖 View Docs](docs/VITAL_SIGNS_FORMATTER.md) |
 
-### ✅ Input Validators
-Comprehensive form validators with customizable error messages:
-- **Field-Specific**: Email, Name, Mobile, Password
-- **Standalone**: Required, Numeric
-- **Flexible**: Custom validator with composable rules
-- **Password Matching**: Confirm password validator
+## 🚀 Quick Start
 
-### 📊 Data Utilities
-- **Enum Converter**: Convert between enums and their string representations
-- **Model Parser**: Parse and convert JSON data to Dart models
-- **Type Converter**: Handle type conversions safely
+### Installation
 
-### 📅 Date & Time Helpers
-- Format dates and times with ease
-- Parse and manipulate date/time values
-
-## Installation
-
-Add this to your package's `pubspec.yaml` file:
+Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
@@ -47,324 +32,175 @@ Then run:
 flutter pub get
 ```
 
-## Usage
+### Import
 
-### Input Formatters
-
-Import the package:
 ```dart
 import 'package:smart_utils_package/smart_utils_package.dart';
 ```
 
-#### Mobile Number Formatter
+## 📖 Quick Examples
+
+### Type Converters
+
 ```dart
-// Allow any starting digit (default)
+// Nullable conversion
+final age = TypeConverter.toIntOrNull("25"); // 25
+final invalid = TypeConverter.toIntOrNull("abc"); // null
+
+// Non-nullable with default
+final count = TypeConverter.toInt("abc", defaultValue: 0); // 0
+final valid = TypeConverter.toInt("42", defaultValue: 0); // 42
+```
+
+### Enum Converters
+
+```dart
+enum UserStatus { active, inactive, pending }
+
+// String to enum (case-insensitive)
+final status = EnumConverter.fromString(
+  value: 'ACTIVE',
+  values: UserStatus.values,
+  defaultValue: UserStatus.inactive,
+);
+
+// Enum to display name
+final display = EnumConverter.toDisplayName(UserStatus.pending);
+// Returns: "Pending"
+```
+
+### Number Formatters
+
+```dart
+// Currency
+SmartNumberFormat.currency(1234.56); // "$1,234.56"
+
+// Percentage
+SmartNumberFormat.percentage(0.856); // "85.60%"
+
+// Compact notation
+SmartNumberFormat.compact(1500000); // "1.5M"
+
+// File size
+SmartNumberFormat.fileSize(1536000); // "1.46 MB"
+```
+
+### Input Formatters
+
+```dart
 TextField(
   inputFormatters: SmartInputFormatters.mobile(),
   keyboardType: TextInputType.phone,
 )
 
-// Only allow starting with 0 or 5
 TextField(
-  inputFormatters: SmartInputFormatters.mobile(startDigits: [0, 5]),
-  keyboardType: TextInputType.phone,
-)
-
-// Saudi Arabia numbers (start with 5)
-TextField(
-  inputFormatters: SmartInputFormatters.mobile(startDigits: [5]),
-  keyboardType: TextInputType.phone,
-)
-```
-
-#### ID Number Formatter
-```dart
-// Default: must start with 1 or 2
-TextField(
-  inputFormatters: SmartInputFormatters.idNumber(),
-  keyboardType: TextInputType.number,
-)
-
-// Allow any starting digit
-TextField(
-  inputFormatters: SmartInputFormatters.idNumber(startDigits: []),
-  keyboardType: TextInputType.number,
-)
-
-// Custom start digits (e.g., 1, 2, or 3)
-TextField(
-  inputFormatters: SmartInputFormatters.idNumber(
-    startDigits: [1, 2, 3],
-    maxLength: 15,
-  ),
-  keyboardType: TextInputType.number,
-)
-```
-
-#### Email Formatter
-```dart
-TextField(
-  inputFormatters: SmartInputFormatters.email(maxLength: 50),
+  inputFormatters: SmartInputFormatters.email(),
   keyboardType: TextInputType.emailAddress,
-)
-```
-
-#### Name Formatter
-```dart
-TextField(
-  inputFormatters: SmartInputFormatters.name(),
-)
-```
-**Note:** Supports both Arabic and English letters.
-
-#### Vital Signs Formatter (Dynamic)
-```dart
-// Temperature (max 2 digits before, 1 after decimal)
-TextField(
-  inputFormatters: SmartInputFormatters.vitalSign(
-    allowDecimal: true,
-    maxDigitsBeforeDecimal: 2,
-    maxDigitsAfterDecimal: 1,
-    maxValue: 50.0,  // Realistic max temperature
-  ),
-)
-
-// Blood Pressure - Systolic
-TextField(
-  inputFormatters: SmartInputFormatters.vitalSign(
-    minValue: 40,
-    maxValue: 250,  // Realistic max systolic BP
-    maxLength: 3,
-  ),
-)
-
-// Heart Rate
-TextField(
-  inputFormatters: SmartInputFormatters.vitalSign(
-    maxValue: 250,  // Realistic max heart rate
-    maxLength: 3,
-  ),
-)
-```
-
-#### Password Formatters
-```dart
-// Free password (no restrictions)
-TextField(
-  inputFormatters: SmartInputFormatters.password(maxLength: 50),
-  obscureText: true,
-)
-
-// Secure password with requirements
-TextField(
-  inputFormatters: SmartInputFormatters.securePassword(
-    requireUppercase: true,
-    requireLowercase: true,
-    requireNumbers: true,
-    requireSpecialChars: true,
-    minLength: 8,
-  ),
-  obscureText: true,
 )
 ```
 
 ### Input Validators
 
-#### Email Validator
 ```dart
 TextFormField(
-  validator: SmartInputValidators.email(
-    required: true,
-    customErrorMessage: 'Please provide a valid email',
-  ),
+  validator: SmartInputValidators.email(required: true),
 )
-```
 
-#### Name Validator
-```dart
-TextFormField(
-  validator: SmartInputValidators.name(
-    required: true,
-    minLength: 2,
-  ),
-)
-```
-
-#### Mobile Validator
-```dart
 TextFormField(
   validator: SmartInputValidators.mobile(
     required: true,
     minLength: 10,
-    maxLength: 15,
   ),
 )
 ```
 
-#### Required Validator
-```dart
-TextFormField(
-  validator: SmartInputValidators.required(
-    'Username',
-    customErrorMessage: 'Username cannot be empty',
-  ),
-)
-```
+## 🎯 Features
 
-#### Numeric Validator
-```dart
-TextFormField(
-  validator: SmartInputValidators.numeric(
-    required: true,
-    allowDecimal: true,
-  ),
-)
-```
+### ✅ Type Safety
+- Guaranteed non-null returns with sensible defaults
+- Nullable variants for optional values
+- Smart type conversion with edge case handling
 
-#### Password Validator
-```dart
-TextFormField(
-  validator: SmartInputValidators.password(
-    required: true,
-    minLength: 4,  // Default: 4
-    requireUppercase: true,  // Default: false
-    requireLowercase: true,  // Default: false
-    requireNumbers: true,  // Default: false
-    requireSpecialChars: true,  // Default: false
-  ),
-  obscureText: true,
-)
-```
+### 🎨 Comprehensive Formatting
+- Currency, percentage, compact notation
+- File sizes, ordinal numbers, signed numbers
+- Date/time formatting with multiple presets
 
-#### Confirm Password Validator
-```dart
-TextFormField(
-  validator: SmartInputValidators.confirmPassword(
-    _passwordController.text,
-    customErrorMessage: 'Passwords must match',
-  ),
-  obscureText: true,
-)
-```
+### 📝 Input Management
+- 15+ input formatters for common fields
+- 8+ validators with customizable error messages
+- Support for Arabic and English text
 
-#### Custom Validator (Flexible)
-```dart
-// Age field (numeric, 1-3 digits)
-TextFormField(
-  validator: SmartInputValidators.custom(
-    required: true,
-    isNumeric: true,
-    minLength: 1,
-    maxLength: 3,
-    fieldName: 'Age',
-  ),
-)
+### 🔄 Data Conversion
+- Type-safe enum conversion
+- Case-insensitive matching
+- Display name formatting (camelCase → Title Case)
 
-// Company email only
-TextFormField(
-  validator: SmartInputValidators.custom(
-    required: true,
-    isEmail: true,
-    customValidator: (value) {
-      if (value?.endsWith('@company.com') != true) {
-        return 'Must be a company email';
-      }
-      return null;
-    },
-  ),
-)
+## 📱 Example App
 
-// Pattern matching (e.g., license plate)
-TextFormField(
-  validator: SmartInputValidators.custom(
-    pattern: RegExp(r'^[A-Z]{2}\d{4}$'),
-    customErrorMessage: 'Format must be: XX1234',
-  ),
-)
-```
+The package includes a comprehensive example app demonstrating all features:
 
-**Custom Validator Rules:**
-- `required` - Field is required
-- `minLength` / `maxLength` - Length constraints
-- `isNumeric` - Must contain only digits
-- `isEmail` - Must be valid email format
-- `isAlphabetic` - Must contain only letters
-- `pattern` - Must match RegExp pattern
-- `customValidator` - Custom validation function
-
-### Available Input Formatters
-
-| Formatter | Description | Key Parameters |
-|-----------|-------------|----------------|
-| `mobile()` | Mobile phone numbers | `maxLength` |
-| `email()` | Email addresses | `maxLength` |
-| `name()` | Person names | `maxLength` |
-| `vitalSign()` | Vital signs/numeric | `allowDecimal`, `maxDigitsBeforeDecimal`, `maxDigitsAfterDecimal`, `minValue`, `maxValue` |
-| `idNumber()` | National ID numbers | `startDigits`, `maxLength` |
-| `passport()` | Passport numbers | `maxLength` |
-| `password()` | Free password | `maxLength` |
-| `securePassword()` | Secure password | `requireUppercase`, `requireLowercase`, `requireNumbers`, `requireSpecialChars`, `minLength` |
-| `postalCode()` | Postal/ZIP codes | `maxLength` |
-| `creditCard()` | Credit card numbers | None |
-| `cvv()` | CVV/CVC codes | `maxLength` |
-| `age()` | Age values | `maxLength` |
-| `percentage()` | Percentage (0-100) | None |
-| `currency()` | Money/currency | `maxValue` |
-| `username()` | Usernames | `maxLength` |
-| `url()` | URLs | `maxLength` |
-
-### Available Input Validators
-
-| Validator | Description | Key Parameters |
-|-----------|-------------|----------------|
-| `email()` | Email validation | `required`, `fieldName`, `customErrorMessage` |
-| `name()` | Name validation | `required`, `minLength`, `customErrorMessage` |
-| `mobile()` | Mobile validation | `required`, `minLength`, `maxLength`, `customErrorMessage` |
-| `required()` | Required field | `fieldName`, `customErrorMessage` |
-| `numeric()` | Numeric validation | `required`, `allowDecimal`, `customErrorMessage` |
-| `password()` | Password strength | `minLength`, `requireUppercase`, `requireLowercase`, `requireNumbers`, `requireSpecialChars`, `customErrorMessage` |
-| `confirmPassword()` | Password matching | `customErrorMessage` |
-| `custom()` | Flexible validator | `required`, `minLength`, `maxLength`, `isNumeric`, `isEmail`, `isAlphabetic`, `pattern`, `customValidator` |
-
-## Example App
-
-Check out the `/example` folder for a comprehensive demo app showcasing all input formatters and validators with a beautiful UI.
-
-To run the example:
 ```bash
 cd example
 flutter pub get
 flutter run
 ```
 
-## Additional Features
+The example app includes:
+- **Type Converters Demo** - All conversion methods with examples
+- **Enum Converters Demo** - Enum conversion showcase
+- **Number Formatters Demo** - All number formatting options
+- **Input Formatters Demo** - Interactive input field examples
+- **Input Validators Demo** - Form validation examples
 
-### Date & Time Helpers
-```dart
-// Use the date/time formatting utilities
-// (Check the source code for available methods)
-```
+## 📋 API Reference
 
-### Enum Converter
-```dart
-// Convert enums to/from strings
-// (Check the source code for available methods)
-```
+### Type Converters
 
-### Model Parser
-```dart
-// Parse JSON to Dart models
-// (Check the source code for available methods)
-```
+| Method | Return Type | Description |
+|--------|-------------|-------------|
+| `toBoolOrNull(value)` | `bool?` | Convert to nullable bool |
+| `toBool(value, {defaultValue})` | `bool` | Convert to bool with default |
+| `toIntOrNull(value)` | `int?` | Convert to nullable int |
+| `toInt(value, {defaultValue})` | `int` | Convert to int with default |
+| `toDoubleOrNull(value)` | `double?` | Convert to nullable double |
+| `toDouble(value, {defaultValue})` | `double` | Convert to double with default |
+| `toStringOrNull(value)` | `String?` | Convert to nullable string |
+| `toStr(value, {defaultValue})` | `String` | Convert to string with default |
+| `toListOrNull<T>(value)` | `List<T>?` | Convert to nullable list |
+| `toList<T>(value, {defaultValue})` | `List<T>` | Convert to list with default |
+| `toMapOrNull(value)` | `Map?` | Convert to nullable map |
+| `toMap(value, {defaultValue})` | `Map` | Convert to map with default |
+| `toDateTimeOrNull(value)` | `DateTime?` | Convert to nullable DateTime |
+| `toDateTime(value, {defaultValue})` | `DateTime` | Convert to DateTime with default |
 
-## Contributing
+### Number Formatters
+
+| Method | Description | Example Output |
+|--------|-------------|----------------|
+| `currency(value)` | Format as currency | "$1,234.56" |
+| `percentage(value)` | Format as percentage | "85.60%" |
+| `compact(value)` | Compact notation | "1.5M" |
+| `fileSize(bytes)` | File size | "1.46 MB" |
+| `decimal(value)` | Decimal formatting | "123.46" |
+| `withSeparator(value)` | Thousand separator | "1,234,567" |
+| `ordinal(value)` | Ordinal numbers | "1st", "2nd" |
+| `signed(value)` | Signed numbers | "+5", "-3" |
+
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Support
+## 🔗 Links
 
-For issues, questions, or contributions, please visit the [GitHub repository](https://github.com/SmartMind-New/smart_utils_package).
+- [GitHub Repository](https://github.com/SmartMind-New/smart_utils_package)
+- [Issue Tracker](https://github.com/SmartMind-New/smart_utils_package/issues)
+- [Changelog](CHANGELOG.md)
+
+## 💡 Support
+
+For questions, issues, or feature requests, please visit our [GitHub repository](https://github.com/SmartMind-New/smart_utils_package).

@@ -648,6 +648,7 @@ class RegistrationForm extends StatelessWidget {
 
 ---
 
-## Support
+## See Also
 
-For issues or feature requests, please visit the [GitHub repository](https://github.com/SmartMind-New/smart_utils_package).
+- [Vital Signs Formatters](VITAL_SIGNS_FORMATTER.md)
+- [Main README](../README.md)
