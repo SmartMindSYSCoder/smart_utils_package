@@ -4,18 +4,25 @@ import 'package:smart_utils_package/smart_utils_package.dart';
 
 void main() {
   // Helper to apply a list of formatters
+  // Helper to apply a list of formatters
   TextEditingValue applyFormatters(
     List<TextInputFormatter> formatters,
     String oldText,
-    String newText,
-  ) {
+    String newText, {
+    int? oldSelection,
+    int? newSelection,
+  }) {
     final oldValue = TextEditingValue(
       text: oldText,
-      selection: TextSelection.collapsed(offset: oldText.length),
+      selection: TextSelection.collapsed(
+        offset: oldSelection ?? oldText.length,
+      ),
     );
     var newValue = TextEditingValue(
       text: newText,
-      selection: TextSelection.collapsed(offset: newText.length),
+      selection: TextSelection.collapsed(
+        offset: newSelection ?? newText.length,
+      ),
     );
 
     for (final formatter in formatters) {
@@ -71,6 +78,20 @@ void main() {
         final result = applyFormatters(formatters, "", "test@email.com");
         expect(result.text, "test@email.com");
       });
+
+      test('should preserve cursor position when editing middle', () {
+        // "test@email.com" -> inserting "a" at index 4 ("test" | "@...") -> "testa@email.com"
+        // Cursor should remain after "a" (index 5)
+        final result = applyFormatters(
+          formatters,
+          "test@email.com",
+          "testa@email.com",
+          oldSelection: 4,
+          newSelection: 5,
+        );
+        expect(result.text, "testa@email.com");
+        expect(result.selection.baseOffset, 5);
+      });
     });
 
     // =========================================================================
@@ -82,6 +103,22 @@ void main() {
       test('should prevent double spaces', () {
         final result = applyFormatters(formatters, "John", "John  Doe");
         expect(result.text, "John Doe");
+      });
+
+      test('should preserve cursor when reducing spaces', () {
+        // "John " -> type space -> "John  " -> "John "
+        // Old selection: 5 ("John |")
+        // New selection: 6 ("John  |")
+        // Formatted: "John ". Selection should be 5.
+        final result = applyFormatters(
+          formatters,
+          "John ",
+          "John  ",
+          oldSelection: 5,
+          newSelection: 6,
+        );
+        expect(result.text, "John ");
+        expect(result.selection.baseOffset, 5);
       });
     });
 
@@ -118,6 +155,21 @@ void main() {
         // "12345678" -> "1234 5678"
         final result = applyFormatters(formatters, "", "12345678");
         expect(result.text, "1234 5678");
+      });
+
+      test('should adjust cursor when adding space', () {
+        // "1234" -> "12345" -> "1234 5"
+        // Cursor at 5 (after 5).
+        // Formatted: "1234 5". Cursor should be 6 (after 5).
+        final result = applyFormatters(
+          formatters,
+          "1234",
+          "12345",
+          oldSelection: 4,
+          newSelection: 5,
+        );
+        expect(result.text, "1234 5");
+        expect(result.selection.baseOffset, 6);
       });
     });
 

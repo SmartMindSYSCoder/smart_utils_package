@@ -341,10 +341,27 @@ class _NoSpaceFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    if (!newValue.text.contains(' ')) {
+      return newValue;
+    }
+
     final text = newValue.text.replaceAll(' ', '');
+
+    // Calculate new selection
+    int selectionIndex = newValue.selection.baseOffset;
+    int spacesRemovedBeforeSelection = 0;
+
+    for (int i = 0; i < selectionIndex; i++) {
+      if (i < newValue.text.length && newValue.text[i] == ' ') {
+        spacesRemovedBeforeSelection++;
+      }
+    }
+
     return TextEditingValue(
       text: text,
-      selection: TextSelection.collapsed(offset: text.length),
+      selection: TextSelection.collapsed(
+        offset: selectionIndex - spacesRemovedBeforeSelection,
+      ),
     );
   }
 }
@@ -356,10 +373,29 @@ class _SingleSpaceFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final text = newValue.text.replaceAll(RegExp(r'\s+'), ' ');
+    String text = newValue.text;
+    int selectionIndex = newValue.selection.baseOffset;
+
+    // Let's iterate and build.
+    final buffer = StringBuffer();
+    int newSelection = selectionIndex;
+
+    for (int i = 0; i < text.length; i++) {
+      if (i > 0 && text[i] == ' ' && text[i - 1] == ' ') {
+        // This is a duplicate space
+        if (i < selectionIndex) {
+          newSelection--;
+        }
+      } else {
+        buffer.write(text[i]);
+      }
+    }
+
+    text = buffer.toString();
+
     return TextEditingValue(
       text: text,
-      selection: TextSelection.collapsed(offset: text.length),
+      selection: TextSelection.collapsed(offset: newSelection),
     );
   }
 }
@@ -587,20 +623,59 @@ class _CreditCardFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final text = newValue.text.replaceAll(' ', '');
-    final buffer = StringBuffer();
+    var text = newValue.text.replaceAll(' ', '');
+    // If it's just deleting a space, handle it specifically or let the logic handle it?
+    // If we just stripped spaces, we lost cursor info relative to spaces.
+    // But we are REBUILDING the string with spaces.
 
+    // First, let's see where the cursor is relative to the *clean* text.
+    // newValue has the raw text user typed (with spaces if they typed them, or without if they deleted).
+    // Wait, newValue comes from the framework. If user typed a digit, it's there.
+
+    // Let's map original cursor to "clean cursor" (index in text without spaces).
+    int selectionIndex = newValue.selection.baseOffset;
+    int cleanSelectionIndex = 0;
+
+    for (int i = 0; i < selectionIndex; i++) {
+      if (i < newValue.text.length && newValue.text[i] != ' ') {
+        cleanSelectionIndex++;
+      }
+    }
+
+    final buffer = StringBuffer();
+    int newSelectionIndex = 0;
+
+    // Rebuild with spaces
     for (int i = 0; i < text.length; i++) {
       if (i > 0 && i % 4 == 0) {
         buffer.write(' ');
+        if (i < cleanSelectionIndex) {
+          // If the inserted space is BEFORE our cursor, shift cursor rights
+          // This logic is tricky.
+          // Let's count spaces added.
+        }
       }
       buffer.write(text[i]);
     }
 
     final formatted = buffer.toString();
+
+    // Calculate new cursor position based on cleanSelectionIndex
+    // For every 4 chars in clean text, we add 1 space.
+    // So newPos = cleanPos + (cleanPos / 4) ?
+
+    newSelectionIndex =
+        cleanSelectionIndex +
+        (cleanSelectionIndex > 0 ? (cleanSelectionIndex - 1) ~/ 4 : 0);
+
+    // Edge case handling if mapped index exceeds length
+    if (newSelectionIndex > formatted.length) {
+      newSelectionIndex = formatted.length;
+    }
+
     return TextEditingValue(
       text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
+      selection: TextSelection.collapsed(offset: newSelectionIndex),
     );
   }
 }
