@@ -109,17 +109,17 @@ SmartNumberFormat.range(10, 20); // "10 - 20"
 |--------|------------|-------------|
 | `currency` | `value`, `symbol`, `decimalDigits`, `locale`, `symbolPosition` | Currency formatting |
 | `currencyWithoutSymbol` | `value`, `decimalDigits`, `locale` | Currency without symbol |
-| `percentage` | `value`, `decimalDigits`, `multiply100`, `locale` | Percentage formatting |
+| `percentage` | `value`, `decimalDigits`, `showSymbol`, `multiply100` | Percentage formatting |
 | `compact` | `value`, `decimalDigits`, `locale` | 1K, 1M, 1B format |
-| `compactLong` | `value`, `decimalDigits`, `locale` | 1 thousand, 1 million format |
+| `compactLong` | `value`, `locale` | 1 thousand, 1 million format |
 | `fileSize` | `bytes`, `decimalDigits`, `useBase1024` | File size (KB, MB, GB) |
-| `decimal` | `value`, `decimalDigits`, `locale`, `removeTrailingZeros` | Raw decimal formatting |
+| `decimal` | `value`, `decimalDigits`, `removeTrailingZeros` | Raw decimal formatting |
 | `withSeparator` | `value`, `decimalDigits`, `locale` | Adds thousand separators |
-| `ordinal` | `value`, `locale` | Ordinal suffix (st, nd, rd, th) |
+| `ordinal` | `value` | Ordinal suffix (st, nd, rd, th) |
 | `signed` | `value`, `decimalDigits` | Always shows sign (+/-) |
 | `custom` | `value`, `pattern`, `locale` | Custom DateFormat pattern |
-| `range` | `min`, `max`, `decimalDigits`, `locale` | Formats a range "min - max" |
-| `parseFormatted` | `formattedString`, `locale` | Parses string back to num |
+| `range` | `min`, `max`, `decimalDigits` | Formats a range "min - max" |
+| `parseFormatted` | `formattedString` | Parses string back to num |
 
 ## See Also
 

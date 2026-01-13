@@ -440,65 +440,7 @@ TextField(
 
 ---
 
-## Date & Time
 
-### Date Formatter
-
-**Method:** `SmartInputFormatters.date()`
-
-**Description:** Formats dates in DD/MM/YYYY format with automatic slash insertion.
-
-**Features:**
-- Allows: Digits and forward slashes
-- Auto-formats as DD/MM/YYYY
-- Max length: 10 characters
-
-**Usage:**
-```dart
-TextField(
-  inputFormatters: SmartInputFormatters.date(),
-  keyboardType: TextInputType.number,
-  decoration: InputDecoration(
-    labelText: 'Date',
-    hintText: 'DD/MM/YYYY',
-  ),
-)
-```
-
-**Examples:**
-- Input: "12012026" → Output: "12/01/2026"
-- Input: "1212026" → Output: "12/12/026"
-
----
-
-### Time Formatter
-
-**Method:** `SmartInputFormatters.time()`
-
-**Description:** Formats time in HH:MM format with automatic colon insertion.
-
-**Features:**
-- Allows: Digits and colons
-- Auto-formats as HH:MM
-- Max length: 5 characters
-
-**Usage:**
-```dart
-TextField(
-  inputFormatters: SmartInputFormatters.time(),
-  keyboardType: TextInputType.number,
-  decoration: InputDecoration(
-    labelText: 'Time',
-    hintText: 'HH:MM',
-  ),
-)
-```
-
-**Examples:**
-- Input: "1430" → Output: "14:30"
-- Input: "930" → Output: "09:30"
-
----
 
 ## Other Formatters
 
