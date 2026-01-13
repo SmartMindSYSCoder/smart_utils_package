@@ -24,7 +24,7 @@ Add to your `pubspec.yaml`:
 dependencies:
   smart_utils_package:
     git:
-      url: https://github.com/SmartMind-New/smart_utils_package.git
+      url: https://github.com/SmartMindSYSCoder/smart_utils_package.git
 ```
 
 Then run:
