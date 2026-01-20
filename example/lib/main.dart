@@ -4,6 +4,8 @@ import 'package:smart_utils_example/pages/input_formatters_page.dart';
 import 'package:smart_utils_example/pages/input_validators_page.dart';
 import 'package:smart_utils_example/pages/number_formatters_page.dart';
 import 'package:smart_utils_example/pages/type_converters_page.dart';
+import 'package:smart_utils_example/pages/ui_utilities_page.dart';
+import 'package:smart_utils_package/smart_utils_package.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,19 +16,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Smart Utils Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          filled: true,
-          fillColor: Colors.grey.shade50,
+    // 1. Wrap with AppWrapper for text scaling and safe area management
+    return AppWrapper(
+      minTextScale: 0.8,
+      maxTextScale: 1.2,
+      child: MaterialApp(
+        title: 'Smart Utils Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            filled: true,
+            fillColor: Colors.grey.shade50,
+          ),
+        ),
+        // 2. Wrap default home with DoubleTapExitWrapper
+        home: DoubleTapExitWrapper(
+          exitMessage: 'Press back again to exit',
+          snackbarBackgroundColor: Colors.deepPurple,
+          child: const HomePage(),
         ),
       ),
-      home: const HomePage(),
     );
   }
 }
@@ -45,6 +57,13 @@ class HomePage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          _buildMenuItem(
+            context,
+            title: 'UI Utilities',
+            subtitle: 'Wrappers, Slivers, Spacing...',
+            icon: Icons.design_services,
+            page: const UiUtilitiesDemo(),
+          ),
           _buildMenuItem(
             context,
             title: 'Input Formatters',
