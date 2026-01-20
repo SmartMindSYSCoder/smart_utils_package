@@ -4,15 +4,17 @@ A comprehensive Flutter utility package providing type-safe data converters, for
 
 ## 📚 Documentation
 
-| Module | Description | Documentation |
-|--------|-------------|---------------|
-| **Type Converters** | Safe type conversion utilities | [📖 View Docs](docs/TYPE_CONVERTERS.md) |
-| **Enum Converters** | Enum to/from string conversion | [📖 View Docs](docs/ENUM_CONVERTERS.md) |
-| **Number Formatters** | Currency, percentage, file sizes, etc. | [📖 View Docs](docs/NUMBER_FORMATTERS.md) |
-| **Date/Time Helpers** | Date formatting and manipulation | [📖 View Docs](docs/DATETIME_HELPERS.md) |
-| **Input Formatters** | Text field input formatters | [📖 View Docs](docs/INPUT_FORMATTERS.md) |
-| **Input Validators** | Form field validators | [📖 View Docs](docs/INPUT_VALIDATORS.md) |
-| **Vital Signs** | Specialized medical formatters | [📖 View Docs](docs/VITAL_SIGNS_FORMATTER.md) |
+| Module                | Description                                             | Documentation                                 |
+| --------------------- | ------------------------------------------------------- | --------------------------------------------- |
+| **Type Converters**   | Safe type conversion utilities                          | [📖 View Docs](docs/TYPE_CONVERTERS.md)       |
+| **Enum Converters**   | Enum to/from string conversion                          | [📖 View Docs](docs/ENUM_CONVERTERS.md)       |
+| **Number Formatters** | Currency, percentage, file sizes, etc.                  | [📖 View Docs](docs/NUMBER_FORMATTERS.md)     |
+| **Date/Time Helpers** | Date formatting and manipulation                        | [📖 View Docs](docs/DATETIME_HELPERS.md)      |
+| **Input Formatters**  | Text field input formatters                             | [📖 View Docs](docs/INPUT_FORMATTERS.md)      |
+| **Input Validators**  | Form field validators                                   | [📖 View Docs](docs/INPUT_VALIDATORS.md)      |
+| **Vital Signs**       | Specialized medical formatters                          | [📖 View Docs](docs/VITAL_SIGNS_FORMATTER.md) |
+| **UI Utilities**      | UI helpers & wrappers (DoubleTapExit, AppWrapper, etc.) | [📖 View Docs](docs/UI_UTILITIES.md)          |
+| **Country Flags**     | Convert country codes to flag emojis                    | See [Quick Reference](QUICK_REFERENCE.md)     |
 
 ## 🚀 Quick Start
 
@@ -28,6 +30,7 @@ dependencies:
 ```
 
 Then run:
+
 ```bash
 flutter pub get
 ```
@@ -85,6 +88,26 @@ SmartNumberFormat.compact(1500000); // "1.5M"
 SmartNumberFormat.fileSize(1536000); // "1.46 MB"
 ```
 
+### Country Flags
+
+```dart
+// Convert country code to flag emoji
+String usFlag = 'US'.toFlag;  // 🇺🇸
+String yemenFlag = 'YE'.toFlag;  // 🇾🇪
+String saudiFlag = 'SA'.toFlag;  // 🇸🇦
+
+// Use in widgets
+Text('United States ${'US'.toFlag}')
+ListTile(
+  leading: Text('YE'.toFlag, style: TextStyle(fontSize: 32)),
+  title: Text('Yemen'),
+)
+
+// Validate format
+'US'.isValidCountryCodeFormat  // true
+'USA'.isValidCountryCodeFormat  // false
+```
+
 ### Input Formatters
 
 ```dart
@@ -127,21 +150,25 @@ TextFormField(
 ## 🎯 Features
 
 ### ✅ Type Safety
+
 - Guaranteed non-null returns with sensible defaults
 - Nullable variants for optional values
 - Smart type conversion with edge case handling
 
 ### 🎨 Comprehensive Formatting
+
 - Currency, percentage, compact notation
 - File sizes, ordinal numbers, signed numbers
 - Date/time formatting with multiple presets
 
 ### 📝 Input Management
+
 - 15+ input formatters for common fields
 - 8+ validators with customizable error messages
 - Support for Arabic and English text
 
 ### 🔄 Data Conversion
+
 - Type-safe enum conversion
 - Case-insensitive matching
 - Display name formatting (camelCase → Title Case)
@@ -157,6 +184,7 @@ flutter run
 ```
 
 The example app includes:
+
 - **Type Converters Demo** - All conversion methods with examples
 - **Enum Converters Demo** - Enum conversion showcase
 - **Number Formatters Demo** - All number formatting options
@@ -167,35 +195,35 @@ The example app includes:
 
 ### Type Converters
 
-| Method | Return Type | Description |
-|--------|-------------|-------------|
-| `toBoolOrNull(value)` | `bool?` | Convert to nullable bool |
-| `toBool(value, {defaultValue})` | `bool` | Convert to bool with default |
-| `toIntOrNull(value)` | `int?` | Convert to nullable int |
-| `toInt(value, {defaultValue})` | `int` | Convert to int with default |
-| `toDoubleOrNull(value)` | `double?` | Convert to nullable double |
-| `toDouble(value, {defaultValue})` | `double` | Convert to double with default |
-| `toStringOrNull(value)` | `String?` | Convert to nullable string |
-| `toStr(value, {defaultValue})` | `String` | Convert to string with default |
-| `toListOrNull<T>(value)` | `List<T>?` | Convert to nullable list |
-| `toList<T>(value, {defaultValue})` | `List<T>` | Convert to list with default |
-| `toMapOrNull(value)` | `Map?` | Convert to nullable map |
-| `toMap(value, {defaultValue})` | `Map` | Convert to map with default |
-| `toDateTimeOrNull(value)` | `DateTime?` | Convert to nullable DateTime |
-| `toDateTime(value, {defaultValue})` | `DateTime` | Convert to DateTime with default |
+| Method                              | Return Type | Description                      |
+| ----------------------------------- | ----------- | -------------------------------- |
+| `toBoolOrNull(value)`               | `bool?`     | Convert to nullable bool         |
+| `toBool(value, {defaultValue})`     | `bool`      | Convert to bool with default     |
+| `toIntOrNull(value)`                | `int?`      | Convert to nullable int          |
+| `toInt(value, {defaultValue})`      | `int`       | Convert to int with default      |
+| `toDoubleOrNull(value)`             | `double?`   | Convert to nullable double       |
+| `toDouble(value, {defaultValue})`   | `double`    | Convert to double with default   |
+| `toStringOrNull(value)`             | `String?`   | Convert to nullable string       |
+| `toStr(value, {defaultValue})`      | `String`    | Convert to string with default   |
+| `toListOrNull<T>(value)`            | `List<T>?`  | Convert to nullable list         |
+| `toList<T>(value, {defaultValue})`  | `List<T>`   | Convert to list with default     |
+| `toMapOrNull(value)`                | `Map?`      | Convert to nullable map          |
+| `toMap(value, {defaultValue})`      | `Map`       | Convert to map with default      |
+| `toDateTimeOrNull(value)`           | `DateTime?` | Convert to nullable DateTime     |
+| `toDateTime(value, {defaultValue})` | `DateTime`  | Convert to DateTime with default |
 
 ### Number Formatters
 
-| Method | Description | Example Output |
-|--------|-------------|----------------|
-| `currency(value)` | Format as currency | "$1,234.56" |
-| `percentage(value)` | Format as percentage | "85.60%" |
-| `compact(value)` | Compact notation | "1.5M" |
-| `fileSize(bytes)` | File size | "1.46 MB" |
-| `decimal(value)` | Decimal formatting | "123.46" |
-| `withSeparator(value)` | Thousand separator | "1,234,567" |
-| `ordinal(value)` | Ordinal numbers | "1st", "2nd" |
-| `signed(value)` | Signed numbers | "+5", "-3" |
+| Method                 | Description          | Example Output |
+| ---------------------- | -------------------- | -------------- |
+| `currency(value)`      | Format as currency   | "$1,234.56"    |
+| `percentage(value)`    | Format as percentage | "85.60%"       |
+| `compact(value)`       | Compact notation     | "1.5M"         |
+| `fileSize(bytes)`      | File size            | "1.46 MB"      |
+| `decimal(value)`       | Decimal formatting   | "123.46"       |
+| `withSeparator(value)` | Thousand separator   | "1,234,567"    |
+| `ordinal(value)`       | Ordinal numbers      | "1st", "2nd"   |
+| `signed(value)`        | Signed numbers       | "+5", "-3"     |
 
 ## 🤝 Contributing
 
